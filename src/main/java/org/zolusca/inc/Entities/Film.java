@@ -6,15 +6,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity @Table(name = "user")
+@Entity @Table(name = "film")
 @Setter @Getter
 @AllArgsConstructor @NoArgsConstructor
-public class User {
+public class Film {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
-    private String username;
-    @OneToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "role_id",referencedColumnName = "id")
-    private Role role;
+    private String name;
+    @ManyToOne(
+            cascade = {CascadeType.PERSIST},
+            fetch = FetchType.EAGER)
+    @JoinColumn(name = "genre_id",referencedColumnName = "id")
+    private Genre genre;
 }
