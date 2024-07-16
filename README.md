@@ -48,11 +48,28 @@ child ikut terhapus, orphanRemoval dapat menghapus child saja tanpa parent
 #### One To One
 1. `@OneToOne`
 Gunakan `@JoinColumn` pada entity yang memiliki foreign key entity lain
-```java
-    @OneToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "role_id")
-    private Role role;
-```
+    ```java
+        @OneToOne(cascade = CascadeType.PERSIST)
+        @JoinColumn(name = "role_id")
+        private Role role;
+    ```
+
+2. `@OneToMany`
+Pada oneToMany kita perlu menggunakan anotasi yang berbeda sesuai pada
+table/entity, yakni `@OneToMany` dan `@ManyToOne`. Cara membaca/menentukannya
+dengan membaca entity pada class dan relasinya.
+     
+   ```java
+        // banyak film untuk 1 genre
+          public class Film {
+           @ManyToOne(
+                   cascade = {CascadeType.PERSIST},
+                   fetch = FetchType.EAGER)
+           @JoinColumn(name = "genre_id",referencedColumnName = "id")
+           private Genre genre;
+    }
+    ```
+
 
 ### Repository
 #### 1. membuat query method
