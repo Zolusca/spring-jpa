@@ -54,22 +54,41 @@ Gunakan `@JoinColumn` pada entity yang memiliki foreign key entity lain
         private Role role;
     ```
 
-2. `@OneToMany`
-Pada oneToMany kita perlu menggunakan anotasi yang berbeda sesuai pada
-table/entity, yakni `@OneToMany` dan `@ManyToOne`. Cara membaca/menentukannya
-dengan membaca entity pada class dan relasinya.
+   2. `@OneToMany`
+   Pada oneToMany kita perlu menggunakan anotasi yang berbeda sesuai pada
+   table/entity, yakni `@OneToMany` dan `@ManyToOne`. Cara membaca/menentukannya
+   dengan membaca entity pada class dan relasinya.
      
-   ```java
-        // banyak film untuk 1 genre
-          public class Film {
-           @ManyToOne(
-                   cascade = {CascadeType.PERSIST},
-                   fetch = FetchType.EAGER)
-           @JoinColumn(name = "genre_id",referencedColumnName = "id")
-           private Genre genre;
-    }
-    ```
+      ```java
+           // banyak film untuk 1 genre
+             public class Film {
+              @ManyToOne(
+                      cascade = {CascadeType.PERSIST},
+                      fetch = FetchType.EAGER)
+              @JoinColumn(name = "genre_id",referencedColumnName = "id")
+              private Genre genre;
+       }
+       ```
 
+      3. `ManyToMany`
+      many to many dapat memiliki beberapa cara, salah satunya adalah membuat table middle yang
+      menyimpan id dari masing masing table. Kita perlu mendefinisikan nama table middle, dan 
+      petunjuk id foreign key yang disimpan disana
+
+          ```java
+            public class Student {
+            @ManyToMany(
+            cascade = {CascadeType.PERSIST,CascadeType.REMOVE},
+            fetch = FetchType.EAGER
+            )
+            @JoinTable(
+            name = "student_course",// nama table middle
+            joinColumns = @JoinColumn(name = "student_id"), // nama foreign key class ini pada table middle
+            inverseJoinColumns = @JoinColumn(name = "course_id") // nama foreign key class opposite/sebelah pada table middle
+            )
+            private List<Course> courses;
+            }
+         ```
 
 ### Repository
 #### 1. membuat query method
@@ -100,4 +119,5 @@ pada class ini foreignkey ke entity sebelah menggunakan role_id pada table datab
   - `referencedColumnName` = memberi tahu bahwa foreign key ini references ke mana 
   `@JoinColumn(name = "role_id",referencedColumnName = "id")` artinya class references
   pada opposite/class sebelah adalah id.
-- 
+- `@JoinTable` digunakan seringnya pada many to many, karena biasanya many to many
+akan membuat middle table. `@JoinTable(name = "student_course")` di ini nama table middle. 
